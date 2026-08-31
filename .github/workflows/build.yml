@@ -1,0 +1,45 @@
+name: Build MAUI (iOS + Android)
+
+# "on:" = the list of events that will trigger this workflow to run.
+on:
+  # Lets you trigger this workflow by hand from the GitHub UI:
+  # Actions tab → "Build MAUI (iOS + Android)" → "Run workflow" button.
+  workflow_dispatch:
+
+  # Also auto-runs whenever someone pushes a commit, but only if it matches
+  # BOTH conditions below (branches AND paths) — think of them as an AND filter.
+  push:
+    # Only trigger for pushes to the "main" branch. Pushes to any other
+    # branch (e.g. a feature branch) are ignored.
+    branches: [main]
+    # Only trigger if the commit actually changes one of these file(s).
+    # Here it's just this workflow file itself — so pushing/editing THIS
+    # file and pushing to main will auto-run it once, as a quick sanity check
+    # that the YAML is still valid. Editing MAUI app code does NOT trigger
+    # this, because that code lives in a different repo (MauiTemplateApp).
+    paths:
+      - ".github/workflows/build.yml"
+      # This repo (MauiTemplateApp-Build) has no source of its own, so a push to
+      # main in the MauiTemplateApp repo will NOT trigger this workflow automatically.
+      # To auto-build on every change there, add a small workflow in MauiTemplateApp
+      # that fires a `repository_dispatch` (or uses `workflow_call`) into this repo,
+      # or just trigger it manually via workflow_dispatch / on a schedule.
+
+env:
+  DOTNET_VERSION: "10.0.x"
+  SOURCE_REPO: "minhtamldt/MauiTemplateApp"
+  SOURCE_REF: "main"
+  SOURCE_PATH: "app-source"
+  CSPROJ_PATH: "app-source/sources/MauiTemplateApp/MauiTemplateApp.csproj"
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout MauiTemplateApp
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.SOURCE_REPO }}
+          ref: ${{ env.SOURCE_REF }}
+          path: ${{ env.SOURCE_PATH }}
+          token: ${{ secrets.SOURCE_REPO_TOKEN }}
