@@ -1,0 +1,22 @@
+# Source checked out locally when testing scripts/build-*.sh
+# (matches SOURCE_PATH in .github/workflows/build.yml)
+app-source/
+
+# .NET / MAUI build output (in case scripts are run locally)
+bin/
+obj/
+
+# Local secrets / signing material — never commit these
+*.p12
+*.pfx
+*.mobileprovision
+*.keystore
+*.jks
+.env
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
