@@ -26,7 +26,7 @@ on:
       # or just trigger it manually via workflow_dispatch / on a schedule.
 
 env:
-  DOTNET_VERSION: "10.0.x"
+  DOTNET_VERSION: "10.0.101"
   SOURCE_REPO: "minhtamldt/MauiTemplateApp"
   SOURCE_REF: "main"
   SOURCE_PATH: "app-source"
