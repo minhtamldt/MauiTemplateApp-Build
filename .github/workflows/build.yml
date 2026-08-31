@@ -43,3 +43,17 @@ jobs:
           ref: ${{ env.SOURCE_REF }}
           path: ${{ env.SOURCE_PATH }}
           token: ${{ secrets.SOURCE_REPO_TOKEN }}
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      # `dotnet workload install` resolves the workload version from the
+      # nearest global.json going up from the working directory, so running
+      # it inside SOURCE_PATH (the checked-out MauiTemplateApp) makes it pick
+      # up the version pinned in that project's global.json instead of
+      # whatever the latest workload set happens to be.
+      - name: Install MAUI workloads
+        working-directory: ${{ env.SOURCE_PATH }}
+        run: dotnet workload install maui-ios maui-android --source https://api.nuget.org/v3/index.json
